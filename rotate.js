@@ -7,30 +7,22 @@ var rotations;
 function onload() {
 	canvas = document.getElementById("canvas");
 	ctx = canvas.getContext("2d");
-	resize();
+	size();
 	ctx.save();
-ctx.scale(0.75, 1);
-ctx.beginPath();
-ctx.arc(20, 21, 10, 0, Math.PI*2, false);
-ctx.stroke();
-ctx.closePath();
-ctx.restore();
+	ctx.scale(0.75, 1);
+	ctx.beginPath();
+	ctx.arc(20, 21, 10, 0, Math.PI*2, false);
+	ctx.stroke();
+	ctx.closePath();
+	ctx.restore();
 }
 
-function resize() {
-	var width = document.width;
-	if (width === undefined) {
-    // if document width fails, e.g., this page http://jblevins.org/projects/markdown-mode/
-    // then find the biggest element available to grab width
-    var widthElt = (document.getElementsByTagName('html')[0] ||
-        document.getElementsByTagName('body')[0] ||
-        document.querySelector('*'));
+function size() {
+	canvas.width = "900";
+	canvas.height = "400";
+}
 
-    // use widthElt’s width or worst-case fallback to the window
-    width = widthElt ? widthElt.offsetWidth : window.innerWidth;
-}
-	canvas.style.width = width;
-}
+
 
 function Equation(op, num){
 	this.ops = [op];
