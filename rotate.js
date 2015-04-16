@@ -5,6 +5,7 @@ var rotations;
 var slicesArr = [];
 var edge = 7;//the size of the edges
 var amountRotated = 0;
+var graphTypeInput;
 
 function onload() {
 	canvas = document.getElementById("canvas");
@@ -12,20 +13,33 @@ function onload() {
 	size();
 	document.getElementById("rotate").addEventListener("click", function(){start();});
 	document.getElementById("graph").addEventListener("click", function(){graph();});
+	graphTypeInput = document.getElementById("typeOfGraph");
 }
 
 function start() {
 	slicesArr = [];
-	for(i = 0; i <= 100; i++)
-		addSlice(200 + i * 5, i/-5 + 300, Math.pow(2,i/16)*(i+300)/300);
+	var graphType = graphTypeInput.value;
+	if(graphType == "exponential") {
+		for(i = 0; i <= 100; i++)
+			addSlice(200 + i * 5, i/-5 + 300, Math.pow(2,i/16)*(i+300)/300);
+	} else if (graphType == "sine") {
+		addSlice(200 + i * 5, i/-5 + 300, Math.sin(i/16)*(i+300)/10);
+	}
 	graph()
 	animate();
 }
 
 function graph() {
 	ctx.clearRect(497,0,canvas.width,canvas.height);
-	for(i = 0; i <= 100; i++) {
-		drawLine(500+(i-1) *3,300 - 3*Math.pow(2,(i-1)/16),500 + 3*i,300 - 3*Math.pow(2,i/16));
+	var graphType = graphTypeInput.value;
+	if(graphType == "exponential") {
+		for(i = 0; i <= 100; i++) {
+			drawLine(500+(i-1) *3,300 - 3*Math.pow(2,(i-1)/16),500 + 3*i,300 - 3*Math.pow(2,i/16));
+		}
+	} else if(graphType == "sine") {
+		for(i = 0; i <= 100; i++) {
+			drawLine(500+(i-1) *3,300 - 60*Math.sin((i-1)/16),500 + 3*i,300 - 60*Math.sin(i/16));
+		}
 	}
 	drawLine(497,300,800,300);
 }
