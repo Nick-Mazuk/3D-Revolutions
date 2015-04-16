@@ -24,10 +24,13 @@ function start() {
 			addSlice(200 + i * 5, i/-5 + 300, Math.pow(2,i/16)*(i+300)/300);
 	} else if(graphType == "sine") {
 		for(i = 0; i <= 100; i++)
-			addSlice(200 + i * 5, i/-5 + 300, Math.sin(i/16)*(i+300)/5);
+			addSlice(200 + i * 5, i/-5 + 300, Math.sin(i/16)*(i+300)/8);
 	} else if(graphType == "absValue") {
 		for(i = 0; i <= 100; i++)
 			addSlice(200 + i * 5, i/-5 + 300, Math.abs(100 - 2*i)*(i+300)/300);
+	} else if(graphType == "rational") {
+		for(i = 0; i <= 100; i++)
+			addSlice(200 + i * 5, i/-5 + 300, 20*rational(i/10+2.505)*(i+300)/300);
 	}
 	graph()
 	animate();
@@ -47,6 +50,10 @@ function graph() {
 	} else if(graphType == "absValue") {
 		for(i = 0; i <= 100; i++) {
 			drawLine(500+(i-1) *3,300 - 1.5*Math.abs(100 - 2*(i-1)),500 + 3*i,300 - 1.5*Math.abs(100 - 2*i));
+		}
+	} else if(graphType == "rational") {
+		for(i = 0; i <= 100; i++) {
+			drawLine(500+(i-1) *3,300 - 40*rational((i-1)/10+2.505),500 + 3*i,300 - 40*rational(i/10+2.505));
 		}
 	} else {
 		ctx.font="20px Helvetica";
@@ -93,42 +100,49 @@ function Slice(x,y,radius) {
 	this.y = y;
 	this.radius = Math.abs(radius);
 	if(this.radius > 200)
-		this.radius = 200;
+		this.radius = false;
 }
 
 Slice.prototype.render = function (arclen) {
 	//for the left half
-	var gradient=ctx.createLinearGradient(0,this.y - this.radius - edge,0,this.y + this.radius + edge);
-	gradient.addColorStop("0.05", "#AAAAAA");
-	gradient.addColorStop("0.15","#DDDDDD");
-	gradient.addColorStop("0.3","#999999");
-	gradient.addColorStop("0.9","#333333");
-	ctx.lineWidth = edge;
-	ctx.save();
-	ctx.beginPath();
-	ctx.rect(this.x - this.radius - edge, this.y - this.radius - edge, this.radius + edge, this.radius*2 + edge*2);
-	ctx.clip();
-	ctx.beginPath();
-	ctx.arc(this.x, this.y, this.radius, 3*Math.PI/2, 3*Math.PI/2 - arclen, true);
-	ctx.strokeStyle = gradient;
-	ctx.stroke();
-	ctx.restore();
+	if(!isNaN(this.radius)) {
+		var gradient=ctx.createLinearGradient(0,this.y - this.radius - edge,0,this.y + this.radius + edge);
+		gradient.addColorStop("0.05", "#AAAAAA");
+		gradient.addColorStop("0.2","#DDDDDD");
+		gradient.addColorStop("0.4","#999999");
+		gradient.addColorStop("0.6","#666666");
+		gradient.addColorStop("0.7","#555555")
+		gradient.addColorStop("0.9","#333333");
+		ctx.lineWidth = edge;
+		ctx.save();
+		ctx.beginPath();
+		ctx.rect(this.x - this.radius - edge, this.y - this.radius - edge, this.radius + edge, this.radius*2 + edge*2);
+		ctx.clip();
+		ctx.beginPath();
+		ctx.arc(this.x, this.y, this.radius, 3*Math.PI/2, 3*Math.PI/2 - arclen, true);
+		ctx.strokeStyle = gradient;
+		ctx.stroke();
+		ctx.restore();
 
-	//for the right half
-	var gradient=ctx.createLinearGradient(0,this.y - this.radius - edge,0,this.y + this.radius + edge);
-	gradient.addColorStop("0.05", "#AAAAAA");
-	gradient.addColorStop("0.5","#555555");
-	gradient.addColorStop("0.9","#333333");
-	ctx.lineWidth = edge;
-	ctx.save();
-	ctx.beginPath();
-	ctx.rect(this.x, this.y - this.radius - edge, this.radius + edge, this.radius*2 + edge*2);
-	ctx.clip();
-	ctx.beginPath();
-	ctx.arc(this.x, this.y, this.radius, 3*Math.PI/2, 3*Math.PI/2 - arclen, true);
-	ctx.strokeStyle = gradient;
-	ctx.stroke();
-	ctx.restore();
+		//for the right half
+		var gradient=ctx.createLinearGradient(0,this.y - this.radius - edge,0,this.y + this.radius + edge);
+		gradient.addColorStop("0.05", "#AAAAAA");
+		gradient.addColorStop("0.1","#999999");
+		gradient.addColorStop("0.5","#555555");
+		gradient.addColorStop("0.85","#292929");
+		gradient.addColorStop("0.92","#2D2D2D");
+		gradient.addColorStop("0.98","#333333");
+		ctx.lineWidth = edge;
+		ctx.save();
+		ctx.beginPath();
+		ctx.rect(this.x, this.y - this.radius - edge, this.radius + edge, this.radius*2 + edge*2);
+		ctx.clip();
+		ctx.beginPath();
+		ctx.arc(this.x, this.y, this.radius, 3*Math.PI/2, 3*Math.PI/2 - arclen, true);
+		ctx.strokeStyle = gradient;
+		ctx.stroke();
+		ctx.restore();
+	}
 }
 
 function renderSlices(arclen) {
@@ -166,4 +180,8 @@ function execute(x,operator,number){
 	}if(operator == "^"){
 		return Math.pow(x,number);
 	}
+}
+
+function rational(x) {
+	return (x*x*x - 2*x)/(2*(x*x - 5));
 }
