@@ -1,6 +1,7 @@
 body {
 	width:900px;
 	margin:0 auto;
+	font-family: Helvetica, 'Open Sans', sans-serif;
 }
 
 canvas {
@@ -9,4 +10,9 @@ canvas {
 
 button {
 	display:block;
+}
+
+h1 {
+	text-align:center;
+	margin-top:6px;
 }
