@@ -22,8 +22,12 @@ function start() {
 	if(graphType == "exponential") {
 		for(i = 0; i <= 100; i++)
 			addSlice(200 + i * 5, i/-5 + 300, Math.pow(2,i/16)*(i+300)/300);
-	} else if (graphType == "sine") {
-		addSlice(200 + i * 5, i/-5 + 300, Math.sin(i/16)*(i+300)/10);
+	} else if(graphType == "sine") {
+		for(i = 0; i <= 100; i++)
+			addSlice(200 + i * 5, i/-5 + 300, Math.sin(i/16)*(i+300)/5);
+	} else if(graphType == "absValue") {
+		for(i = 0; i <= 100; i++)
+			addSlice(200 + i * 5, i/-5 + 300, Math.abs(100 - 2*i)*(i+300)/300);
 	}
 	graph()
 	animate();
@@ -38,7 +42,11 @@ function graph() {
 		}
 	} else if(graphType == "sine") {
 		for(i = 0; i <= 100; i++) {
-			drawLine(500+(i-1) *3,300 - 60*Math.sin((i-1)/16),500 + 3*i,300 - 60*Math.sin(i/16));
+			drawLine(500+(i-1) *3,300 - 80*Math.sin((i-1)/16),500 + 3*i,300 - 80*Math.sin(i/16));
+		}
+	} else if(graphType == "absValue") {
+		for(i = 0; i <= 100; i++) {
+			drawLine(500+(i-1) *3,300 - 1.5*Math.abs(100 - 2*(i-1)),500 + 3*i,300 - 1.5*Math.abs(100 - 2*i));
 		}
 	}
 	drawLine(497,300,800,300);
@@ -80,7 +88,9 @@ function addSlice(x,y,radius) {
 function Slice(x,y,radius) {
 	this.x = x;
 	this.y = y;
-	this.radius = radius;
+	this.radius = Math.abs(radius);
+	if(this.radius > 200)
+		this.radius = 200;
 }
 
 Slice.prototype.render = function (arclen) {
