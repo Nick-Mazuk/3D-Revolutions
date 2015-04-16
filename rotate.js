@@ -31,6 +31,9 @@ function start() {
 	} else if(graphType == "rational") {
 		for(i = 0; i <= 100; i++)
 			addSlice(200 + i * 5, i/-5 + 300, 20*rational(i/10+2.505)*(i+300)/300);
+	} else if(graphType == "triangle") {
+		for(i = 0; i <= 100; i++)
+			addSlice(200 + i * 5, i/-5 + 300, Math.abs(50 - 2*(i%50))*(i+300)/300);
 	}
 	graph()
 	animate();
@@ -40,26 +43,30 @@ function graph() {
 	ctx.clearRect(497,0,canvas.width,canvas.height);
 	var graphType = graphTypeInput.value;
 	if(graphType == "exponential") {
-		for(i = 0; i <= 100; i++) {
+		for(i = 1; i <= 100; i++) {
 			drawLine(500+(i-1) *3,300 - 3*Math.pow(2,(i-1)/16),500 + 3*i,300 - 3*Math.pow(2,i/16));
 		}
 	} else if(graphType == "sine") {
-		for(i = 0; i <= 100; i++) {
+		for(i = 1; i <= 100; i++) {
 			drawLine(500+(i-1) *3,300 - 80*Math.sin((i-1)/16),500 + 3*i,300 - 80*Math.sin(i/16));
 		}
 	} else if(graphType == "absValue") {
-		for(i = 0; i <= 100; i++) {
+		for(i = 1; i <= 100; i++) {
 			drawLine(500+(i-1) *3,300 - 1.5*Math.abs(100 - 2*(i-1)),500 + 3*i,300 - 1.5*Math.abs(100 - 2*i));
 		}
 	} else if(graphType == "rational") {
-		for(i = 0; i <= 100; i++) {
+		for(i = 1; i <= 100; i++) {
 			drawLine(500+(i-1) *3,300 - 40*rational((i-1)/10+2.505),500 + 3*i,300 - 40*rational(i/10+2.505));
+		}
+	} else if(graphType == "triangle") {
+		for(i = 1; i <= 100; i++) {
+			drawLine(500+(i-1) *3,300 - 1.5*Math.abs(50 - 2*((i-1)%50)),500 + 3*i,300 - 1.5*Math.abs(50 - 2*(i%50)));
 		}
 	} else {
 		ctx.font="20px Helvetica";
 		ctx.fillText("The function has not been developed yet.",275,200);
 	}
-	drawLine(497,300,800,300);
+	drawLine(500,300,800,300);
 }
 
 function drawLine(x,y,z,w) {
