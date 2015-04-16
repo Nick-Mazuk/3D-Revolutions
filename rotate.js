@@ -48,6 +48,9 @@ function graph() {
 		for(i = 0; i <= 100; i++) {
 			drawLine(500+(i-1) *3,300 - 1.5*Math.abs(100 - 2*(i-1)),500 + 3*i,300 - 1.5*Math.abs(100 - 2*i));
 		}
+	} else {
+		ctx.font="20px Helvetica";
+		ctx.fillText("The function has not been developed yet.",275,200);
 	}
 	drawLine(497,300,800,300);
 }
