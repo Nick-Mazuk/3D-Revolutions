@@ -11,12 +11,12 @@ function onload() {
 	canvas = document.getElementById("canvas");
 	ctx = canvas.getContext("2d");
 	size();
-	document.getElementById("rotate").addEventListener("click", function(){start();});
+	document.getElementById("rotate").addEventListener("click", function(){start(true);});
 	document.getElementById("graph").addEventListener("click", function(){graph();});
 	graphTypeInput = document.getElementById("typeOfGraph");
 }
 
-function start() {
+function start(complete) {
 	slicesArr = [];
 	var graphType = graphTypeInput.value;
 	if(graphType == "exponential") {
@@ -30,17 +30,25 @@ function start() {
 			addSlice(200 + i * 5, i/-5 + 300, Math.abs(100 - 2*i)*(i+300)/300);
 	} else if(graphType == "rational") {
 		for(i = 0; i <= 100; i++)
-			addSlice(200 + i * 5, i/-5 + 300, 20*rational(i/10+2.505)*(i+300)/300);
+			addSlice(200 + i * 5, i/-5 + 300, 20*rational(i/10+2.505)*(i+300)/300, i < 20);
 	} else if(graphType == "triangle") {
 		for(i = 0; i <= 100; i++)
 			addSlice(200 + i * 5, i/-5 + 300, Math.abs(50 - 2*(i%50))*(i+300)/300);
+	} else if(graphType == "hyperbola") {
+		for(i = 0; i <= 100; i++)
+			addSlice(200 + i * 5, i/-5 + 300, 100*hyperbola(i/200 + 1)*(i+300)/300);
+	} else if(graphType == "log") {
+		for(i = 0; i <= 100; i++)
+			addSlice(200 + i * 5, i/-5 + 300, 50*Math.log((i + 0.01)/20)*(i+300)/300, i < 20);
 	}
-	graph()
-	animate();
+	if(complete) {
+		animate();
+		graph();
+	}
 }
 
 function graph() {
-	ctx.clearRect(497,0,canvas.width,canvas.height);
+	ctx.clearRect(0,0,canvas.width,canvas.height);
 	var graphType = graphTypeInput.value;
 	if(graphType == "exponential") {
 		for(i = 1; i <= 100; i++) {
@@ -62,11 +70,22 @@ function graph() {
 		for(i = 1; i <= 100; i++) {
 			drawLine(500+(i-1) *3,300 - 1.5*Math.abs(50 - 2*((i-1)%50)),500 + 3*i,300 - 1.5*Math.abs(50 - 2*(i%50)));
 		}
+	} else if(graphType == "hyperbola") {
+		for(i = 1; i <= 100; i++) {
+			drawLine(500+(i-1) *3,300 - 100*hyperbola((i - 1)/100 + 1),500 + 3*i,300 - 100*hyperbola(i/100 + 1));
+			drawLine(500+(i-1) *3,300 + 100*hyperbola((i - 1)/100 + 1),500 + 3*i,300 + 100*hyperbola(i/100 + 1));
+		}
+	} else if(graphType == "log") {
+		for(i = 1; i <= 100; i++) {
+			drawLine(500+(i-1) *3,300 - 50*Math.log((i + 0.01)/20),500 + 3*i,300 - 50*Math.log((i + 1.01)/20));
+		}
 	} else {
 		ctx.font="20px Helvetica";
 		ctx.fillText("The function has not been developed yet.",275,200);
 	}
 	drawLine(500,300,800,300);
+	start(false);
+	renderSlices(0.1);
 }
 
 function drawLine(x,y,z,w) {
@@ -97,17 +116,18 @@ function size() {
 	canvas.height = "556";
 }
 
-function addSlice(x,y,radius) {
-	var temp = new Slice(x,y,radius);
+function addSlice(x,y,radius,fill) {
+	var temp = new Slice(x,y,radius,fill);
 	slicesArr.push(temp);
 }
 
-function Slice(x,y,radius) {
+function Slice(x,y,radius,fill) {
 	this.x = x;
 	this.y = y;
-	this.radius = Math.abs(radius);
-	if(this.radius > 200)
+	this.radius = radius;
+	if(this.radius > 200 || this.radius < -200)
 		this.radius = false;
+	this.fill = fill;
 }
 
 Slice.prototype.render = function (arclen) {
@@ -126,7 +146,10 @@ Slice.prototype.render = function (arclen) {
 		ctx.rect(this.x - this.radius - edge, this.y - this.radius - edge, this.radius + edge, this.radius*2 + edge*2);
 		ctx.clip();
 		ctx.beginPath();
-		ctx.arc(this.x, this.y, this.radius, 3*Math.PI/2, 3*Math.PI/2 - arclen, true);
+		if(this.radius >= 0)
+			ctx.arc(this.x, this.y, this.radius, 3*Math.PI/2, 3*Math.PI/2 - arclen, true);
+		else
+			ctx.arc(this.x, this.y, Math.abs(this.radius), Math.PI/2, Math.PI/2 - arclen, true);
 		ctx.strokeStyle = gradient;
 		ctx.stroke();
 		ctx.restore();
@@ -145,10 +168,21 @@ Slice.prototype.render = function (arclen) {
 		ctx.rect(this.x, this.y - this.radius - edge, this.radius + edge, this.radius*2 + edge*2);
 		ctx.clip();
 		ctx.beginPath();
-		ctx.arc(this.x, this.y, this.radius, 3*Math.PI/2, 3*Math.PI/2 - arclen, true);
+		if(this.radius >= 0)
+			ctx.arc(this.x, this.y, this.radius, 3*Math.PI/2, 3*Math.PI/2 - arclen, true);
+		else
+			//ctx.arc(this.x, this.y, Math.abs(this.radius), Math.PI/2, Math.PI/2 - arclen, true);
 		ctx.strokeStyle = gradient;
 		ctx.stroke();
 		ctx.restore();
+
+		if(this.fill) {
+			var gradient = ctx.createLinearGradient(0,this.y - this.radius - edge,0,this.y + this.radius + edge);
+			gradient.addColorStop("0","#A0A0A0");
+			gradient.addColorStop("1","#333333");
+			ctx.fillStyle = gradient;
+			ctx.fill();
+		}
 	}
 }
 
@@ -191,4 +225,8 @@ function execute(x,operator,number){
 
 function rational(x) {
 	return (x*x*x - 2*x)/(2*(x*x - 5));
+}
+
+function hyperbola(x) {
+	return Math.sqrt(x*x - 1);
 }
