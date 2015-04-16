@@ -10,24 +10,32 @@ function onload() {
 	canvas = document.getElementById("canvas");
 	ctx = canvas.getContext("2d");
 	size();
-	document.getElementById("button").addEventListener("click", function(){start();});
+	document.getElementById("rotate").addEventListener("click", function(){start();});
+	document.getElementById("graph").addEventListener("click", function(){graph();});
 }
 
 function start() {
 	slicesArr = [];
-	var domain = 100;
-	for(i = 0; i <= domain; i++)
-		addSlice(200 + i * 5, i/-5 + 300, Math.abs(100 - i*2)*(i+300)/300);
-	ctx.beginPath();
-	ctx.strokeStyle = "black";
-	ctx.moveTo(500, 200);
-	for(i = 0; i <= domain; i++) {
-		ctx.lineTo(500+i,300 - Math.abs(100 - 2*i));
-		ctx.stroke();
-		//console.log(500+i + " " + (300 - Math.abs(100 - 2*i)));
-	}
-	ctx.stroke();
+	for(i = 0; i <= 100; i++)
+		addSlice(200 + i * 5, i/-5 + 300, Math.pow(2,i/16)*(i+300)/300);
+	graph()
 	animate();
+}
+
+function graph() {
+	ctx.clearRect(497,0,canvas.width,canvas.height);
+	for(i = 0; i <= 100; i++) {
+		drawLine(500+(i-1) *3,300 - 3*Math.pow(2,(i-1)/16),500 + 3*i,300 - 3*Math.pow(2,i/16));
+	}
+	drawLine(497,300,800,300);
+}
+
+function drawLine(x,y,z,w) {
+	ctx.beginPath();
+	ctx.strokeStyle = "#000000";
+	ctx.moveTo(x,y);
+	ctx.lineTo(z,w);
+	ctx.stroke();
 }
 
 function animate() {
@@ -36,8 +44,10 @@ function animate() {
 		requestId = undefined;
 		amountRotated = 0;
 	} else {
-		if(amountRotated == 0)
+		if(amountRotated == 0) {
 			ctx.clearRect(0,0,canvas.width,canvas.height);
+			graph();
+		}
 		amountRotated += 0.05;
 		requestAnimationFrame(animate);
 	}
