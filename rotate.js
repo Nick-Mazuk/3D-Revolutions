@@ -12,7 +12,7 @@ function onload() {
 	ctx = canvas.getContext("2d");
 	size();
 	document.getElementById("rotate").addEventListener("click", function(){start(true);});
-	document.getElementById("graph").addEventListener("click", function(){graph();});
+	document.getElementById("graph").addEventListener("click", function(){graph(true);});
 	graphTypeInput = document.getElementById("typeOfGraph");
 }
 
@@ -40,14 +40,18 @@ function start(complete) {
 	} else if(graphType == "log") {
 		for(i = 0; i <= 100; i++)
 			addSlice(200 + i * 5, i/-5 + 300, 50*Math.log((i + 0.01)/20)*(i+300)/300, i < 20);
+	} else if(graphType == "cylinder") {
+		//for(i = 0; i <= 100; i++)
+			addSlice(200 + 1 * 5, 1/-5 + 300, -100/**(i+300)/300*/);
+			console.log(slicesArr[0].x + " " + slicesArr[0].y + " " + slicesArr[0].radius + " " + slicesArr[0].fill);
 	}
 	if(complete) {
 		animate();
-		graph();
+		graph(false);
 	}
 }
 
-function graph() {
+function graph(complete) {
 	ctx.clearRect(0,0,canvas.width,canvas.height);
 	var graphType = graphTypeInput.value;
 	if(graphType == "exponential") {
@@ -79,12 +83,15 @@ function graph() {
 		for(i = 1; i <= 100; i++) {
 			drawLine(500+(i-1) *3,300 - 50*Math.log((i + 0.01)/20),500 + 3*i,300 - 50*Math.log((i + 1.01)/20));
 		}
+	} else if(graphType == "cylinder") {
+		
 	} else {
 		ctx.font="20px Helvetica";
 		ctx.fillText("The function has not been developed yet.",275,200);
 	}
 	drawLine(500,300,800,300);
-	start(false);
+	if(complete)
+		start(false);
 	renderSlices(0.1);
 }
 
@@ -104,7 +111,6 @@ function animate() {
 	} else {
 		if(amountRotated == 0) {
 			ctx.clearRect(0,0,canvas.width,canvas.height);
-			graph();
 		}
 		amountRotated += 0.05;
 		requestAnimationFrame(animate);
@@ -133,35 +139,39 @@ function Slice(x,y,radius,fill) {
 Slice.prototype.render = function (arclen) {
 	//for the left half
 	if(!isNaN(this.radius)) {
-		var gradient=ctx.createLinearGradient(0,this.y - this.radius - edge,0,this.y + this.radius + edge);
+		/*var gradient=ctx.createLinearGradient(0,this.y - this.radius - edge,0,this.y + this.radius + edge);
 		gradient.addColorStop("0.05", "#AAAAAA");
 		gradient.addColorStop("0.2","#DDDDDD");
 		gradient.addColorStop("0.4","#999999");
 		gradient.addColorStop("0.6","#666666");
 		gradient.addColorStop("0.7","#555555")
-		gradient.addColorStop("0.9","#333333");
+		gradient.addColorStop("0.9","#333333");*/
 		ctx.lineWidth = edge;
 		ctx.save();
 		ctx.beginPath();
 		ctx.rect(this.x - this.radius - edge, this.y - this.radius - edge, this.radius + edge, this.radius*2 + edge*2);
 		ctx.clip();
 		ctx.beginPath();
-		if(this.radius >= 0)
+		if(this.radius >= 0){
 			ctx.arc(this.x, this.y, this.radius, 3*Math.PI/2, 3*Math.PI/2 - arclen, true);
-		else
-			ctx.arc(this.x, this.y, Math.abs(this.radius), Math.PI/2, Math.PI/2 - arclen, true);
-		ctx.strokeStyle = gradient;
-		ctx.stroke();
+		}
+		else{
+			ctx.arc(this.x, this.y, -this.radius, 3*Math.PI/2, 3*Math.PI/2 + arclen, true);
+			console.log(this.radius)
+
+		}
+		//ctx.strokeStyle = gradient;
+		ctx.fill();
 		ctx.restore();
 
 		//for the right half
-		var gradient=ctx.createLinearGradient(0,this.y - this.radius - edge,0,this.y + this.radius + edge);
+		/*var gradient=ctx.createLinearGradient(0,this.y - this.radius - edge,0,this.y + this.radius + edge);
 		gradient.addColorStop("0.05", "#AAAAAA");
 		gradient.addColorStop("0.1","#999999");
 		gradient.addColorStop("0.5","#555555");
 		gradient.addColorStop("0.85","#292929");
 		gradient.addColorStop("0.92","#2D2D2D");
-		gradient.addColorStop("0.98","#333333");
+		gradient.addColorStop("0.98","#333333");*/
 		ctx.lineWidth = edge;
 		ctx.save();
 		ctx.beginPath();
@@ -171,18 +181,18 @@ Slice.prototype.render = function (arclen) {
 		if(this.radius >= 0)
 			ctx.arc(this.x, this.y, this.radius, 3*Math.PI/2, 3*Math.PI/2 - arclen, true);
 		else
-			//ctx.arc(this.x, this.y, Math.abs(this.radius), Math.PI/2, Math.PI/2 - arclen, true);
-		ctx.strokeStyle = gradient;
+			ctx.arc(this.x, this.y, -this.radius, 3*Math.PI/2, 3*Math.PI/2 + arclen, true);
+		//ctx.strokeStyle = gradient;
 		ctx.stroke();
 		ctx.restore();
 
-		if(this.fill) {
+		/*if(this.fill) {
 			var gradient = ctx.createLinearGradient(0,this.y - this.radius - edge,0,this.y + this.radius + edge);
 			gradient.addColorStop("0","#A0A0A0");
 			gradient.addColorStop("1","#333333");
 			ctx.fillStyle = gradient;
 			ctx.fill();
-		}
+		}*/
 	}
 }
 
@@ -229,4 +239,13 @@ function rational(x) {
 
 function hyperbola(x) {
 	return Math.sqrt(x*x - 1);
+}
+
+function renderCircle () {
+	ctx.save();
+	ctx.scale(0.5, 1);
+	ctx.beginPath();
+	ctx.arc(200,300,100,0,2*Math.PI,true);
+	ctx.stroke();
+	ctx.restore();
 }
