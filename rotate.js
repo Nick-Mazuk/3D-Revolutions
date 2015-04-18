@@ -6,6 +6,7 @@ var slicesArr = [];
 var edge = 7;//the size of the edges
 var amountRotated = 0;
 var graphTypeInput;
+var fill = false;
 
 function onload() {
 	canvas = document.getElementById("canvas");
@@ -30,7 +31,7 @@ function start(complete) {
 			addSlice(200 + i * 5, i/-5 + 300, Math.abs(100 - 2*i)*(i+300)/300);
 	} else if(graphType == "rational") {
 		for(i = 0; i <= 100; i++)
-			addSlice(200 + i * 5, i/-5 + 300, 20*rational(i/10+2.505)*(i+300)/300, i < 20);
+			addSlice(200 + i * 5, i/-5 + 300, 20*rational(i/10+2.505)*(i+300)/300, i < 2);
 	} else if(graphType == "triangle") {
 		for(i = 0; i <= 100; i++)
 			addSlice(200 + i * 5, i/-5 + 300, Math.abs(50 - 2*(i%50))*(i+300)/300);
@@ -91,6 +92,7 @@ function graph(complete) {
 	drawLine(500,300,800,300);
 	if(complete)
 		start(false);
+	fill = false;
 	renderSlices(0.1);
 }
 
@@ -103,6 +105,7 @@ function drawLine(x,y,z,w) {
 }
 
 function animate() {
+	fill = true;
 	renderSlices(amountRotated);
 	if(amountRotated > Math.PI*2) {
 		requestId = undefined;
@@ -130,6 +133,8 @@ function Slice(x,y,radius,fill) {
 	this.x = x;
 	this.y = y;
 	this.radius = radius;
+	if(this.radius < 0 && this.radius > -7)
+		this.radius = -7;
 	if(this.radius > 200 || this.radius < -200)
 		this.radius = false;
 	this.fill = fill;
@@ -168,8 +173,7 @@ Slice.prototype.render = function (arclen) {
 			gradient.addColorStop("0.1","#333333");
 		}
 		ctx.strokeStyle = gradient;
-		if(this.radius > 0 || this.radius < -6)
-			ctx.stroke();
+		ctx.stroke();
 		ctx.restore();
 
 		//for the right half
@@ -202,20 +206,21 @@ Slice.prototype.render = function (arclen) {
 			gradient.addColorStop("0.02","#333333");
 		}
 		ctx.strokeStyle = gradient;
-		if(this.radius > 0 || this.radius < -6)
-			ctx.stroke();
+		ctx.stroke();
 		ctx.restore();
 
-		if(this.fill) {
+		if(this.fill && fill) {
 			if(this.radius > 0) {
 				var gradient = ctx.createLinearGradient(0,this.y - this.radius - edge,0,this.y + this.radius + edge);
-				gradient.addColorStop("0","#A0A0A0");
+				gradient.addColorStop("0","#BBBBBB");
 				gradient.addColorStop("1","#333333");
 			} else {
 				var gradient = ctx.createLinearGradient(0,this.y - this.radius - edge,0,this.y + this.radius + edge);
-				gradient.addColorStop("1","#A0A0A0");
+				gradient.addColorStop("1","#BBBBBB");
 				gradient.addColorStop("0","#333333");
 			}
+			ctx.lineTo(this.x,this.y);
+			ctx.closePath();
 			ctx.fillStyle = gradient;
 			ctx.fill();
 		}
