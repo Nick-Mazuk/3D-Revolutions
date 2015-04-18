@@ -176,6 +176,10 @@ Slice.prototype.render = function (arclen) {
 		ctx.stroke();
 		ctx.restore();
 
+		ctx.lineWidth = 1;
+		drawLine(this.x,this.y,this.x+1,this.y);
+		ctx.lineWidth = edge;
+
 		//for the right half
 		var gradient=ctx.createLinearGradient(0,this.y - this.radius - edge,0,this.y + this.radius + edge);
 		if(this.radius > 0){
