@@ -134,7 +134,7 @@ function Slice(x,y,radius,fill) {
 	this.y = y;
 	this.radius = radius;
 	if(this.radius < 0 && this.radius > -7)
-		this.radius = -7;
+		this.radius = false;
 	if(this.radius > 200 || this.radius < -200)
 		this.radius = false;
 	this.fill = fill;
