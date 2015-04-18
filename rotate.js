@@ -41,9 +41,8 @@ function start(complete) {
 		for(i = 0; i <= 100; i++)
 			addSlice(200 + i * 5, i/-5 + 300, 50*Math.log((i + 0.01)/20)*(i+300)/300, i < 20);
 	} else if(graphType == "cylinder") {
-		//for(i = 0; i <= 100; i++)
-			addSlice(200 + 1 * 5, 1/-5 + 300, -100/**(i+300)/300*/);
-			console.log(slicesArr[0].x + " " + slicesArr[0].y + " " + slicesArr[0].radius + " " + slicesArr[0].fill);
+		for(i = 0; i <= 100; i++)
+			addSlice(200 + i * 5, i/-5 + 300, 100*(i+300)/300);
 	}
 	if(complete) {
 		animate();
@@ -84,7 +83,7 @@ function graph(complete) {
 			drawLine(500+(i-1) *3,300 - 50*Math.log((i + 0.01)/20),500 + 3*i,300 - 50*Math.log((i + 1.01)/20));
 		}
 	} else if(graphType == "cylinder") {
-		
+		drawLine(500,200,800,200);
 	} else {
 		ctx.font="20px Helvetica";
 		ctx.fillText("The function has not been developed yet.",275,200);
@@ -139,60 +138,87 @@ function Slice(x,y,radius,fill) {
 Slice.prototype.render = function (arclen) {
 	//for the left half
 	if(!isNaN(this.radius)) {
-		/*var gradient=ctx.createLinearGradient(0,this.y - this.radius - edge,0,this.y + this.radius + edge);
-		gradient.addColorStop("0.05", "#AAAAAA");
-		gradient.addColorStop("0.2","#DDDDDD");
-		gradient.addColorStop("0.4","#999999");
-		gradient.addColorStop("0.6","#666666");
-		gradient.addColorStop("0.7","#555555")
-		gradient.addColorStop("0.9","#333333");*/
+		var gradient=ctx.createLinearGradient(0,this.y - this.radius - edge,0,this.y + this.radius + edge);
 		ctx.lineWidth = edge;
-		ctx.save();
-		ctx.beginPath();
-		ctx.rect(this.x - this.radius - edge, this.y - this.radius - edge, this.radius + edge, this.radius*2 + edge*2);
-		ctx.clip();
-		ctx.beginPath();
-		if(this.radius >= 0){
+		if(this.radius > 0){
+			ctx.save();
+			ctx.beginPath();
+			ctx.rect(this.x - this.radius - edge, this.y - this.radius - edge, this.radius + edge, this.radius*2 + edge*2);
+			ctx.clip();
+			ctx.beginPath();
 			ctx.arc(this.x, this.y, this.radius, 3*Math.PI/2, 3*Math.PI/2 - arclen, true);
+			gradient.addColorStop("0.05", "#AAAAAA");
+			gradient.addColorStop("0.2","#DDDDDD");
+			gradient.addColorStop("0.4","#999999");
+			gradient.addColorStop("0.6","#666666");
+			gradient.addColorStop("0.7","#555555")
+			gradient.addColorStop("0.9","#333333");
+		} else {
+			ctx.save();
+			ctx.beginPath();
+			ctx.rect(this.x + this.radius - edge, this.y + this.radius - edge, edge - this.radius, edge*2 - this.radius*2);
+			ctx.clip();
+			ctx.beginPath();
+			ctx.arc(this.x, this.y, -this.radius, 5*Math.PI/2, 5*Math.PI/2 - arclen, true);
+			gradient.addColorStop("0.95", "#AAAAAA");
+			gradient.addColorStop("0.8","#DDDDDD");
+			gradient.addColorStop("0.6","#999999");
+			gradient.addColorStop("0.4","#666666");
+			gradient.addColorStop("0.3","#555555")
+			gradient.addColorStop("0.1","#333333");
 		}
-		else{
-			ctx.arc(this.x, this.y, -this.radius, 3*Math.PI/2, 3*Math.PI/2 + arclen, true);
-			console.log(this.radius)
-
-		}
-		//ctx.strokeStyle = gradient;
-		ctx.fill();
+		ctx.strokeStyle = gradient;
+		if(this.radius > 0 || this.radius < -6)
+			ctx.stroke();
 		ctx.restore();
 
 		//for the right half
-		/*var gradient=ctx.createLinearGradient(0,this.y - this.radius - edge,0,this.y + this.radius + edge);
-		gradient.addColorStop("0.05", "#AAAAAA");
-		gradient.addColorStop("0.1","#999999");
-		gradient.addColorStop("0.5","#555555");
-		gradient.addColorStop("0.85","#292929");
-		gradient.addColorStop("0.92","#2D2D2D");
-		gradient.addColorStop("0.98","#333333");*/
-		ctx.lineWidth = edge;
-		ctx.save();
-		ctx.beginPath();
-		ctx.rect(this.x, this.y - this.radius - edge, this.radius + edge, this.radius*2 + edge*2);
-		ctx.clip();
-		ctx.beginPath();
-		if(this.radius >= 0)
+		var gradient=ctx.createLinearGradient(0,this.y - this.radius - edge,0,this.y + this.radius + edge);
+		if(this.radius > 0){
+			ctx.save();
+			ctx.beginPath();
+			ctx.rect(this.x, this.y - this.radius - edge, this.radius + edge, this.radius*2 + edge*2);
+			ctx.clip();
+			ctx.beginPath();
 			ctx.arc(this.x, this.y, this.radius, 3*Math.PI/2, 3*Math.PI/2 - arclen, true);
-		else
-			ctx.arc(this.x, this.y, -this.radius, 3*Math.PI/2, 3*Math.PI/2 + arclen, true);
-		//ctx.strokeStyle = gradient;
-		ctx.stroke();
+			gradient.addColorStop("0.05", "#AAAAAA");
+			gradient.addColorStop("0.1","#999999");
+			gradient.addColorStop("0.5","#555555");
+			gradient.addColorStop("0.85","#292929");
+			gradient.addColorStop("0.92","#2D2D2D");
+			gradient.addColorStop("0.98","#333333");
+		} else {
+			ctx.save();
+			ctx.beginPath();
+			ctx.rect(this.x, this.y + this.radius - edge, edge - this.radius, edge*2 - this.radius*2);
+			ctx.clip();
+			ctx.beginPath();
+			ctx.arc(this.x, this.y, -this.radius, 5*Math.PI/2, 5*Math.PI/2 - arclen, true);
+			gradient.addColorStop("0.95", "#AAAAAA");
+			gradient.addColorStop("0.9","#999999");
+			gradient.addColorStop("0.5","#555555");
+			gradient.addColorStop("0.15","#292929");
+			gradient.addColorStop("0.08","#2D2D2D");
+			gradient.addColorStop("0.02","#333333");
+		}
+		ctx.strokeStyle = gradient;
+		if(this.radius > 0 || this.radius < -6)
+			ctx.stroke();
 		ctx.restore();
 
-		/*if(this.fill) {
-			var gradient = ctx.createLinearGradient(0,this.y - this.radius - edge,0,this.y + this.radius + edge);
-			gradient.addColorStop("0","#A0A0A0");
-			gradient.addColorStop("1","#333333");
+		if(this.fill&&false) {
+			if(this.radius > 0) {
+				var gradient = ctx.createLinearGradient(0,this.y - this.radius - edge,0,this.y + this.radius + edge);
+				gradient.addColorStop("0","#A0A0A0");
+				gradient.addColorStop("1","#333333");
+			} else {
+				var gradient = ctx.createLinearGradient(0,this.y - this.radius - edge,0,this.y + this.radius + edge);
+				gradient.addColorStop("1","#A0A0A0");
+				gradient.addColorStop("0","#333333");
+			}
 			ctx.fillStyle = gradient;
 			ctx.fill();
-		}*/
+		}
 	}
 }
 
