@@ -8,7 +8,7 @@ var amountRotated = 0;
 var graphTypeInput;
 var fill = false;
 var frameRate = 16; //1000 ms / 60 frames = 16.777
-var requestId = true; //whether the animation should continue
+var continueAnimation = true; //whether the animation should continue
 
 function onload() {
 	canvas = document.getElementById("canvas");
@@ -48,7 +48,7 @@ function start(complete) {
 			addSlice(200 + i * 5, i/-5 + 300, 100*(i+300)/300);
 	}
 	if(complete) {
-		requestId = true;
+		continueAnimation = true;
 		animate();
 		graph(false);
 	}
@@ -113,7 +113,7 @@ function animate() {
 	fill = true;
 	renderSlices(amountRotated);
 	if(amountRotated > Math.PI*2) {
-		requestId = false;
+		continueAnimation = false;
 		amountRotated = 0;
 	} else {
 		if(amountRotated == 0) {
@@ -126,8 +126,7 @@ function animate() {
 	if(wait <= 0) {
 		frameRate++;
 		animate();
-		console.log(frameRate);
-	} else if(requestId) {
+	} else if(continueAnimation) {
 		setTimeout(function() {animate();},wait);
 	}
 }
