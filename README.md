@@ -44,4 +44,45 @@ function animate() {
   }
 ```
 
-###How it works
+###Rendering the 3D Image
+Like using the disc method for integration, this decides to use slices (the edges of the disks) and animates those. This simplifies the animation as each frame then only changes in the circles' arc length. Because of this, I created a simple circle object. *Note: Code presented in all these code segments may not match [the code implimented](https://github.com/Nick-Mazuk/3D-Revolutions/blob/gh-pages/rotate.js) exactly*
+```javascript
+function Slice(x,y,radius,fill) {
+  this.x = x;
+  this.y = y;
+  this.radius = radius;
+  this.fill = fill; //sometimes, the slices need to be filled in for aesthetic purposes
+}
+```
+Each slice has its own render function as to render each slice individually:
+```javascript
+Slice.prototype.render = function(arclen) { //arclen is the amount the arc is rotated
+  var gradient = ctx.createLinearGradient(0,this.y - this.radius - edge,0,this.y + this.radius + edge); //creates the gradient
+  //here various color stops are added
+  ctx.beginPath();
+  ctx.arc(this.x, this.y, this.radius, 3*Math.PI/2, 3*Math.PI/2 - arclen, true); //draws the arc
+  ctx.strokeStyle = gradient;
+  ctx.stroke();
+}
+```
+And a fuction loops through all the slices to render them:
+```javascript
+var slicesArr = [];
+function renderSlices(arclen) {
+  for(i = 0; i < slicesArr.length; i++)
+    slicesArr[i].render(arclen);
+}
+```
+This, however, will create a bunch of overlapping circles, not arcs, which will ruin the 3D effect. This is easily fixed by adding the following code:
+```javascript
+var slicesArr = [];
+function renderSlices(arclen) {
+  ctx.save();
+  ctx.scale(0.5,1);
+  for(i = 0; i < slicesArr.length; i++)
+    slicesArr[i].render(arclen);
+  ctx.restore();
+}
+```
+Animations are covered here.
+###Creating A "Circular" Gradient
