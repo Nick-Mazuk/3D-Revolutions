@@ -84,6 +84,6 @@ function renderSlices(arclen) {
   ctx.restore(); //restores the scale for future drawings, each "circle" will still look like an ellipse
 }
 ```
-Animations are covered [here](https://github.com/Nick-Mazuk/3D-Revolutions/blob/gh-pages/README.md#adaptive-animations).
+Animations the slices and function is covered  [here](https://github.com/Nick-Mazuk/3D-Revolutions/blob/gh-pages/README.md#adaptive-animations).
 ###Creating A "Circular" Gradient
 Simply put, if we create two linear gradients on either half of the arc, it will appear as if we had a "circular" gradient. Will update this section with the details later.
