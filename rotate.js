@@ -7,6 +7,8 @@ var edge = 7;//the size of the edges
 var amountRotated = 0;
 var graphTypeInput;
 var fill = false;
+var frameRate = 16; //1000 ms / 60 frames = 16.777
+var requestId = true; //whether the animation should continue
 
 function onload() {
 	canvas = document.getElementById("canvas");
@@ -46,6 +48,7 @@ function start(complete) {
 			addSlice(200 + i * 5, i/-5 + 300, 100*(i+300)/300);
 	}
 	if(complete) {
+		requestId = true;
 		animate();
 		graph(false);
 	}
@@ -105,17 +108,27 @@ function drawLine(x,y,z,w) {
 }
 
 function animate() {
+	var start = new Date();
+	var nextIteration = frameRate + start.getTime();
 	fill = true;
 	renderSlices(amountRotated);
 	if(amountRotated > Math.PI*2) {
-		requestId = undefined;
+		requestId = false;
 		amountRotated = 0;
 	} else {
 		if(amountRotated == 0) {
 			ctx.clearRect(0,0,canvas.width,canvas.height);
 		}
-		amountRotated += 0.05;
-		requestAnimationFrame(animate);
+		amountRotated += frameRate/340;
+	}
+	var end = new Date();
+	var wait = nextIteration - end.getTime();
+	if(wait <= 0) {
+		frameRate++;
+		animate();
+		console.log(frameRate);
+	} else if(requestId) {
+		setTimeout(function() {animate();},wait);
 	}
 }
 
