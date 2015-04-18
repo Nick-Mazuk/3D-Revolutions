@@ -67,22 +67,23 @@ Slice.prototype.render = function(arclen) { //arclen is the amount the arc is ro
 ```
 And a fuction loops through all the slices to render them:
 ```javascript
-var slicesArr = [];
+var slicesArr = []; //an array to store all the slices
 function renderSlices(arclen) {
-  for(i = 0; i < slicesArr.length; i++)
-    slicesArr[i].render(arclen);
+  for(i = 0; i < slicesArr.length; i++) //loops through each slice in the array
+    slicesArr[i].render(arclen); //render the slice
 }
 ```
 This, however, will create a bunch of overlapping circles, not arcs, which will ruin the 3D effect. This is easily fixed by adding the following code:
 ```javascript
 var slicesArr = [];
 function renderSlices(arclen) {
-  ctx.save();
-  ctx.scale(0.5,1);
+  ctx.save(); //saves the current canvas
+  ctx.scale(0.5,1); //changes the scale to be more narrow looking, so each circle will appear as a vertical ellipse
   for(i = 0; i < slicesArr.length; i++)
     slicesArr[i].render(arclen);
-  ctx.restore();
+  ctx.restore(); //restores the scale for future drawings, each "circle" will still look like an ellipse
 }
 ```
-Animations are covered here.
+Animations are covered [here](https://github.com/Nick-Mazuk/3D-Revolutions/blob/gh-pages/README.md#adaptive-animations).
 ###Creating A "Circular" Gradient
+Simply put, if we create two linear gradients on either half of the arc, it will appear as if we had a "circular" gradient. Will update this section with the details later.
