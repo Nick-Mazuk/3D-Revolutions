@@ -206,7 +206,7 @@ Slice.prototype.render = function (arclen) {
 			ctx.stroke();
 		ctx.restore();
 
-		if(this.fill&&false) {
+		if(this.fill) {
 			if(this.radius > 0) {
 				var gradient = ctx.createLinearGradient(0,this.y - this.radius - edge,0,this.y + this.radius + edge);
 				gradient.addColorStop("0","#A0A0A0");
