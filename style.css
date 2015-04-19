@@ -6,13 +6,40 @@ body {
 
 canvas {
 	border:1px solid black;
-}
-
-button {
-	display:block;
+	background-color: #FFFFFF;
 }
 
 h1 {
 	text-align:center;
 	margin-top:6px;
+}
+
+button, select {
+	display:block;
+	font-size:18px;
+}
+
+select {
+	border:1px solid #000000;
+}
+
+#inputs {
+	margin-top: 1em;
+}
+
+#rotate {
+	float:left;
+	margin-bottom: 6px;
+}
+
+#reset {
+	clear:left;
+}
+
+#typeOfGraph {
+	float:right;
+}
+
+#polynomial {
+	clear:both;
 }

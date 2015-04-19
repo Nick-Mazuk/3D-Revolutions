@@ -1,4 +1,3 @@
-<!-- Inspired by http://codepen.io/TheThirdOne/pen/nbkAm-->
 <html> 
 <head>
 	<script src="rotate.js"></script>
@@ -8,18 +7,21 @@
 <body>
 	<h1>3D Revolutions</h1>
 	<canvas id="canvas">Your browser needs canvas support to render this</canvas>
-	<button type="button" id="graph">Graph the Shape</button>
-	<button type="button" id="rotate">Rotate the Shape</button>
-	<select id="typeOfGraph">
-		<option value="exponential">Exponential</option>
-		<option value="cylinder">Flat Line</option>
-		<option value="sine">Sine</option>
-		<option value="absValue">Absolute Value</option>
-		<option value="log">Logarithmic</option>
-		<option value="rational">Rational</option>
-		<option value="triangle">Triangle Wave</option>
-		<option value="hyperbola">Hyperbola</option>
-		<option value="polynomial">Custom (Polynomial)</option>
-	</select>
+	<div id="inputs">
+		<button type="button" id="rotate">Rotate the Shape</button>
+		<select id="typeOfGraph">
+			<option value="exponential">Exponential</option>
+			<option value="cylinder">Flat Line</option>
+			<option value="sine">Sine</option>
+			<option value="absValue">Absolute Value</option>
+			<option value="log">Logarithmic</option>
+			<option value="rational">Rational</option>
+			<option value="triangle">Triangle Wave</option>
+			<option value="hyperbola">Hyperbola</option>
+			<option value="polynomial">Custom (Polynomial)</option>
+		</select>
+		<button type="button" id="reset">Reset</button>
+		<div id="polynomial"></div>
+	</div>
 </body>
 </html>

@@ -15,8 +15,10 @@ function onload() {
 	ctx = canvas.getContext("2d");
 	size();
 	document.getElementById("rotate").addEventListener("click", function(){start(true);});
-	document.getElementById("graph").addEventListener("click", function(){graph(true);});
+	document.getElementById("typeOfGraph").addEventListener("change", function(){graph(true);});
+	document.getElementById("reset").addEventListener("click", function(){graph(true);});
 	graphTypeInput = document.getElementById("typeOfGraph");
+	graph(true);
 }
 
 function start(complete) {
