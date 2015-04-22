@@ -43,3 +43,13 @@ select {
 #polynomial {
 	clear:both;
 }
+
+#polynomial {
+	display:none;
+	font-size:18px;
+	text-align: center
+}
+
+#polyInput {
+	font-size:18px;
+}

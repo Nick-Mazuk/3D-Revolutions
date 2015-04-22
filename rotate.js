@@ -9,15 +9,17 @@ var graphTypeInput;
 var fill = false;
 var frameRate = 16; //1000 ms / 60 frames = 16.777
 var continueAnimation = true; //whether the animation should continue
+var polyInputBox;
 
 function onload() {
 	canvas = document.getElementById("canvas");
 	ctx = canvas.getContext("2d");
 	size();
 	document.getElementById("rotate").addEventListener("click", function(){start(true);});
-	document.getElementById("typeOfGraph").addEventListener("change", function(){graph(true);});
-	document.getElementById("reset").addEventListener("click", function(){graph(true);});
+	document.getElementById("typeOfGraph").addEventListener("change", function(){graph(true);input();});
+	document.getElementById("reset").addEventListener("click", function(){graph(true);input();});
 	graphTypeInput = document.getElementById("typeOfGraph");
+	polyInputBox = document.getElementById("polyInput");
 	graph(true);
 }
 
@@ -48,6 +50,10 @@ function start(complete) {
 	} else if(graphType == "cylinder") {
 		for(i = 0; i <= 100; i++)
 			addSlice(200 + i * 5, i/-5 + 300, 100*(i+300)/300);
+	} else if(graphType == "polynomial") {
+		var equation = polyInputBox.value;
+		for(w = 0; w <= 100; w++)
+			addSlice(200 + w * 5, w/-5 + 300, parsePolynomial(equation,(w)/15)*(w+300)/300, true);
 	}
 	if(complete) {
 		continueAnimation = true;
@@ -90,6 +96,11 @@ function graph(complete) {
 		}
 	} else if(graphType == "cylinder") {
 		drawLine(500,200,800,200);
+	} else if(graphType == "polynomial") {
+		var equation = polyInputBox.value;
+		for(w = 1; w <= 100; w++) {
+			drawLine(500 + (w-1)*3, 300 - parsePolynomial(equation,(w-1)/12), 500 + w*3, 300 - parsePolynomial(equation,(w)/12));
+		}
 	} else {
 		ctx.font="20px Helvetica";
 		ctx.fillText("The function has not been developed yet.",275,200);
@@ -107,6 +118,14 @@ function drawLine(x,y,z,w) {
 	ctx.moveTo(x,y);
 	ctx.lineTo(z,w);
 	ctx.stroke();
+}
+
+function input() {
+	if(graphTypeInput.value == "polynomial") {
+		document.getElementById("polynomial").style.display = "block";
+	} else {
+		document.getElementById("polynomial").style.display = "none";
+	}
 }
 
 function animate() {
@@ -297,4 +316,59 @@ function renderCircle () {
 	ctx.arc(200,300,100,0,2*Math.PI,true);
 	ctx.stroke();
 	ctx.restore();
+}
+
+function deleteChar(string, goal) {
+	for(i = 0; i < string.length; i++) {
+		if(string.substring(i, i+1) == goal) {
+			string = string.substring(0,i) + string.substring(i + 1, string.length);
+			i--;
+		}
+	}
+	return string;
+}
+
+//Everything below is work by Bradley Gallon to both parse and calculate polynomials
+//Function inputs | s: the string value of the function; x: the x value to input into the function
+function parsePolynomial(s,x){
+	// 2x^3-1x^2+4
+	var equation = [];
+
+	s=deleteChar(s," ");
+	s=s.replace(/[+]/g,"P+");
+	s=s.replace(/[-]/g,"M-");
+	//console.log(s);
+
+	var a = s.split(/[PM]/g);  // a is the equation
+	//console.log(a);
+	var answer=0;
+	for(var i=0;i<a.length;i++){
+		var b = a[i];
+		if(b=="")continue;// Glitch if y=-x or other coefficient of negative value
+		if(b.indexOf("x")==-1){
+			answer+=parseFloat(b);
+		}else{
+			if(b.indexOf("^")==-1){
+				if(b.indexOf("+x")==0||b.indexOf("x")==0){
+					answer+=x;
+				}else if(b.indexOf("-x")==0){
+					answer-=x;
+				}else{
+					answer+=parseFloat(b)*x;
+				}
+			}else{
+				// console.log(b.substring(b.indexOf("^")));
+				if(b.indexOf("+x")==0||b.indexOf("x")==0){
+					answer+=Math.pow(x,parseFloat(b.substring(b.indexOf("^")+1)))
+				}else if(b.indexOf("-x")==0){
+					answer-=Math.pow(x,parseFloat(b.substring(b.indexOf("^")+1)));
+				}else{
+					answer+=parseFloat(b)*Math.pow(x,parseFloat(b.substring(b.indexOf("^")+1)));
+				}
+				// answer+=parseFloat(b)*m.pow(x,parseFloat(b.substring(b.indexOf("^")+1)));
+			}
+		}
+	}
+
+	return answer;
 }
