@@ -8,14 +8,14 @@ var amountRotated = 0;
 var graphTypeInput;
 var fill = false;
 var frameRate = 16; //1000 ms / 60 frames = 16.777
-var continueAnimation = true; //whether the animation should continue
+var continueAnimation = false; //whether the animation should continue
 var polyInputBox;
 
 function onload() {
 	canvas = document.getElementById("canvas");
 	ctx = canvas.getContext("2d");
 	size();
-	document.getElementById("rotate").addEventListener("click", function(){start(true);});
+	document.getElementById("rotate").addEventListener("click", function(){if(!continueAnimation){start(true);}});
 	document.getElementById("typeOfGraph").addEventListener("change", function(){graph(true);input();});
 	document.getElementById("reset").addEventListener("click", function(){graph(true);input();});
 	graphTypeInput = document.getElementById("typeOfGraph");
@@ -335,6 +335,7 @@ function parsePolynomial(s,x){
 	var equation = [];
 
 	s=deleteChar(s," ");
+	s=s.toLowerCase();
 	s=s.replace(/[+]/g,"P+");
 	s=s.replace(/[-]/g,"M-");
 	//console.log(s);
