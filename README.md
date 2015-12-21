@@ -1,5 +1,5 @@
 # 3D-Revolutions
-[View the site](http://nick-mazuk.github.io/3D-Revolutions)
+[View the site](https://nick-mazuk.github.io/3D-Revolutions)
 
 In an effort to help students visual a 2D graph rotating around an axis, I have created a site that visualizes this rotation.
 
@@ -13,8 +13,7 @@ Currently, you can graph several basic functions and view how they rotate around
 - Rational (just one example)
 - Triangle Wave
 - Hyperbola
-
-Custom polynomials are going to come soon. This will allow for any shape imaginable to be rotated.
+- Custom Polynomials
 
 ##Cool Programming Techniques
 ###Adaptive Animations
