@@ -3,7 +3,7 @@
 
 In an effort to help students visual a 2D graph rotating around an axis, I have created a site that visualizes this rotation.
 
-##Features
+## Features
 Currently, you can graph several basic functions and view how they rotate around the x-axis:
 - Exponential
 - Flat Line (y = a)
@@ -15,8 +15,8 @@ Currently, you can graph several basic functions and view how they rotate around
 - Hyperbola
 - Custom Polynomials
 
-##Cool Programming Techniques
-###Adaptive Animations
+## Cool Programming Techniques
+### Adaptive Animations
 By adaptive animations, I mean that the animation will change depending on the frame rate of the device. The result will be that the speed of the animation will look exactly the same as the animation itself changes upon a slower frame rate. Here is how it works:
 
 ```javascript
@@ -43,7 +43,7 @@ function animate() {
   }
 ```
 
-###Rendering the 3D Image
+### Rendering the 3D Image
 Like using the disc method for integration, this decides to use slices (the edges of the disks) and animates those. This simplifies the animation as each frame then only changes in the circles' arc length. Because of this, I created a simple circle object. *Note: Code presented in all these code segments may not match [the code implimented](https://github.com/Nick-Mazuk/3D-Revolutions/blob/gh-pages/rotate.js) exactly*
 ```javascript
 function Slice(x,y,radius,fill) {
@@ -84,5 +84,5 @@ function renderSlices(arclen) {
 }
 ```
 Animations the slices and function is covered  [here](https://github.com/Nick-Mazuk/3D-Revolutions/blob/gh-pages/README.md#adaptive-animations).
-###Creating A "Circular" Gradient
+### Creating A "Circular" Gradient
 Simply put, if we create two linear gradients on either half of the arc, it will appear as if we had a "circular" gradient. Will update this section with the details later.
